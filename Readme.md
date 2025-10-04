@@ -2,7 +2,7 @@
 
 ## Foundation
 
-- Build command
+Build command
 
     npm init 
 
