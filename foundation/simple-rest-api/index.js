@@ -8,6 +8,11 @@ const app = express()
 
 app.use(express.json()); // Middleware which allows parseing JSON objects
 
+app.use((err, req, res, next) => {
+    console.err(err.stack);
+    res.status(500).json({error:'Internal Server Error'});
+})
+
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true, 
     useUnifiedTopology: true
@@ -51,6 +56,30 @@ app.post('/tasks', async (req, res) => {
     const task = new Task(req.body);
     await task.save();
     res.status(201).json(task);
+})
+
+app.delete('/task/:id', async(req, res) => {
+
+    try{
+        console.log('Recieved delete request', req.params.id);
+        const task = await Task.findByIdAndDelete(req.params.id);
+        
+        if(!task) return res.status(404).json({error: 'Task not found'});
+
+        res.json({message: 'Task deleted'});
+    }catch(err)
+    {
+        res.json({err});
+    }
+    
+
+})
+
+app.put('/task/:id', async (req, res) => {
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {new : true});
+
+    if(!task) return res.status(404).json({erro:'Task not found'});
+    res.json({task});
 })
 
 

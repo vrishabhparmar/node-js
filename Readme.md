@@ -113,10 +113,67 @@ await users.insertOne({ name: "Vrishabh", age: 25 });
 const data = await users.findOne({ name: "Vrishabh" });
 console.log(data);
 
+```
 
+## Auth Service
 
+User model with auth service for with signup, login, refresh toke,, protected routes + role based access
+using `Node.js + Express + JWT + bcrpt + MongoDB (Mongoose)`
 
+### Packages used
 
+1. JWT 
 
+`JWT` is used to create a compact, URL-safe token that securely transmits user identity and claims between parties, typically the server and client.
+ It enables stateless authentication, meaning the server does not need to store session data, which enhances scalability.
+ After a user logs in, the server generates a JWT containing user information, signs it with a secret key, and sends it to the client.
+ This token is then used to authenticate subsequent requests by verifying its signature and expiration
 
+2. cookie-parser
+
+The `cookie-parser` middleware is necessary to parse HTTP cookies sent by the client. It allows the server to read and manage cookies, such as those storing the JWT, by populating the req.cookies object with a keyed object based on the cookie names.
+ This is crucial for handling authentication tokens stored in cookies, as it enables the server to retrieve the token from the client's request headers
+
+3. Bcrypt
+
+Bcrypt is used for securely hashing passwords before storing them in the database.
+ Storing passwords in plain text is a significant security risk; bcrypt mitigates this by using a hashing algorithm that is computationally expensive, making brute-force attacks impractical.
+ When a user registers or changes their password, bcrypt hashes the password, and during login, it compares the provided password with the stored hash to verify authenticity.
+ This ensures that even if the database is compromised, the actual passwords remain protected.
+
+```javascript
+
+PORT=4000
+MONGO_URI=
+JWT_ACCESS_SECRET=
+JWT_REFRESH_SECRET=
+ACCESS_TOKEN_EXPIRES_IN=15m
+REFRESH_TOKEN_EXPIRES_IN=7d
+COOKIE_SECURE=false
+
+```
+
+1. JWT_ACCESS_SECRET & JWT_REFRESH_SECRET
+
+Cryptographic secrets used to sign JWTs (JSON Web Tokens) for secure authentication.
+
+`JWT_ACCESS_SECRET`: Used for creating and verifying the access token.
+
+`JWT_REFRESH_SECRET`: Used for refresh tokens, which allow clients to obtain new access tokens when the old ones expire.
+
+2. ACCESS_TOKEN_EXPIRES_IN=15m
+
+The lifetime of issued access tokens. JWT access tokens expire after 15 minutes. This limits the window for potential misuse if stolen.
+
+3. REFRESH_TOKEN_EXPIRES_IN=7d
+
+The lifetime of issued refresh tokens. JWT refresh tokens expire after 7 days. They allow users to obtain new access tokens without re-authenticating
+
+4. COOKIE_SECURE=false
+
+Determines if cookies will be marked as "secure". 
+
+`false`: Cookies can be transferred via HTTP and HTTPS (used in development).
+
+`true`: Cookies are only sent over HTTPS (production best practice)
 
